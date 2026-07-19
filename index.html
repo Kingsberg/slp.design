@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SLP Design | Premium Printing Services Malaysia - Business Cards, Flyers, Stickers</title>
+  <meta name="description"
+    content="SLP Design offers high-quality printing services in Malaysia, including custom business cards, flyers, brochures, waterproof stickers, and large format inkjet printing. Get instant quotes today." />
+  <meta name="keywords" content="printing services malaysia, custom business cards, sticker printing malaysia, flyer printing, label printing, cheap printing muar, printing johor, large format printing, inkjet printing, branding, money packet printing" />
+  <link rel="canonical" href="https://slp.design/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://slp.design/" />
+  <meta property="og:title" content="SLP Design | Premium Printing & Design Services" />
+  <meta property="og:description"
+    content="High-quality printing and design services for businesses in Malaysia. Custom business cards, flyers, stickers, and more with instant quotes." />
+  <meta property="og:image"
+    content="https://images.unsplash.com/photo-1626785774573-4b7993143a2d?q=80&w=2070&auto=format&fit=crop" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://slp.design/" />
+  <meta property="twitter:title" content="SLP Design | Premium Printing Services Malaysia" />
+  <meta property="twitter:description" content="Custom business cards, stickers, and flyers with premium finishes. Fast delivery and high-quality printing in Malaysia." />
+  <meta property="twitter:image" content="https://images.unsplash.com/photo-1626785774573-4b7993143a2d?q=80&w=2070&auto=format&fit=crop" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "SLP Design",
+      "image": "https://images.unsplash.com/photo-1626785774573-4b7993143a2d?q=80&w=2070&auto=format&fit=crop",
+      "@id": "https://slp.design/",
+      "url": "https://slp.design/",
+      "telephone": "+60126353939",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "25, Tingkat Atas, Jalan Bakri, Taman Sri Emas",
+        "addressLocality": "Muar, Johor",
+        "postalCode": "84000",
+        "addressCountry": "MY"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 2.0488574,
+        "longitude": 102.5702909
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "sameAs": [
+        "https://www.facebook.com/slpdesign"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Printing Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Business Card Printing"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Flyer & Brochure Printing"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Sticker & Label Printing"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Inkjet Printing"
+            }
+          }
+        ]
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'sans-serif'],
+            display: ['Google Sans Flex', 'sans-serif'],
+            montserrat: ['Montserrat', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['DM Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              lime: '#c1ff72',
+            },
+            neutral: {
+              50: '#fafafa',
+              100: '#f5f5f5',
+              200: '#e5e5e5',
+              300: '#d4d4d4',
+              400: '#a3a3a3',
+              500: '#737373',
+              600: '#525252',
+              700: '#404040',
+              800: '#262626',
+              850: '#202020',
+              900: '#171717',
+            },
+          },
+          animation: {
+            'marquee': 'marquee 40s linear infinite',
+            'clip-in': 'clipIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) both',
+            'fade-up': 'fadeUp 0.8s ease-out forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            clipIn: {
+              '0%': { opacity: '0', clipPath: 'inset(0 0 100% 0)' },
+              '100%': { opacity: '1', clipPath: 'inset(0 0 0 0)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Animations & Styles (Template Match) -->
+  <style>
+    .font-geist { font-family: 'Geist', sans-serif !important; }
+    .font-display { font-family: 'Google Sans Flex', sans-serif !important; }
+    .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+    .font-body { font-family: 'Inter', sans-serif !important; }
+
+
+    /* Template glass panels */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .glass-panel-dark {
+      background: rgba(23, 23, 23, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Template grid lines */
+    .grid-lines {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+    }
+    .dark .grid-lines {
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    }
+
+    /* Template spotlight card */
+    .spotlight-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .spotlight-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(193, 255, 114, 0.15), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .spotlight-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Template animations */
+    @keyframes fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slide-down { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scale-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+    .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+    .animate-slide-down { animation: slide-down 0.7s ease-out forwards; }
+    .animate-scale-in { animation: scale-in 0.5s ease-out forwards; }
+
+    .animate-delay-100 { animation-delay: 0.1s; }
+    .animate-delay-200 { animation-delay: 0.2s; }
+    .animate-delay-300 { animation-delay: 0.3s; }
+    .animate-delay-400 { animation-delay: 0.4s; }
+    .animate-delay-500 { animation-delay: 0.5s; }
+    .animate-delay-600 { animation-delay: 0.6s; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    html { scroll-behavior: smooth; }
+    ::selection { background: #c1ff72; color: #171717; }
+
+    /* Focus visible styles */
+    *:focus-visible { outline: 2px solid #c1ff72; outline-offset: 2px; border-radius: 4px; }
+    a:focus-visible, button:focus-visible { outline-width: 2px; }
+    .focus-ring:focus-visible { outline: 2px solid #c1ff72; outline-offset: 2px; border-radius: 4px; }
+
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1"
+  }
+}
+</script>
+  <script>
+    document.addEventListener('mousemove', (e) => {
+      document.querySelectorAll('.spotlight-card').forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      });
+    });
+  </script>
+</head>
+
+<body class="min-h-screen overflow-x-hidden selection:bg-[#c1ff72] selection:text-neutral-900 text-neutral-900 dark:text-neutral-100 font-geist bg-neutral-100 dark:bg-neutral-950 relative transition-colors duration-300">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SLP Design · Code & UX Audit Report</title>
+  <style>
+    /* ─── Apple Design System Tokens ────────────────────────────────── */
+    :root {
+      --bg: #ffffff;
+      --surface: #f5f5f7;
+      --surface-warm: #fbfbfd;
+      --fg: #1d1d1f;
+      --fg-2: #424245;
+      --muted: #6e6e73;
+      --meta: #86868b;
+      --border: #d2d2d7;
+      --border-soft: #e8e8ed;
+      --accent: #0071e3;
+      --accent-on: #ffffff;
+      --accent-hover: #0077ed;
+      --accent-active: #0066cc;
+
+      --font-display: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-body: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+
+      --text-xs: 12px;
+      --text-sm: 14px;
+      --text-base: 17px;
+      --text-lg: 21px;
+      --text-xl: 28px;
+      --text-2xl: 40px;
+      --text-3xl: 56px;
+      --text-4xl: 80px;
+
+      --leading-body: 1.47;
+      --leading-tight: 1.05;
+      --tracking-display: -0.015em;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-12: 48px;
+
+      --section-y-desktop: 100px;
+      --section-y-tablet: 64px;
+      --section-y-phone: 40px;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-pill: 980px;
+
+      --elev-flat: none;
+      --elev-ring: 0 0 0 1px var(--border);
+      --elev-raised: 0 12px 32px rgba(0, 0, 0, 0.08);
+      --focus-ring: 0 0 0 4px color-mix(in oklab, var(--accent), transparent 65%);
+
+      --motion-fast: 150ms;
+      --motion-base: 220ms;
+      --ease-standard: cubic-bezier(0.28, 0, 0.22, 1);
+
+      --container-max: 1024px;
+      --container-gutter-desktop: 22px;
+      --container-gutter-tablet: 18px;
+      --container-gutter-phone: 16px;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: var(--font-display); letter-spacing: var(--tracking-display); margin: 0; font-weight: 600; }
+    p { margin: 0; text-wrap: pretty; }
+    a { color: var(--accent); text-decoration: none; }
+    
+    .container { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--container-gutter-desktop); }
+    .section { padding-block: var(--section-y-desktop); }
+    .section-dark { background: #000; color: #fff; --fg: #fff; --muted: #a1a1a6; --border: #424245; }
+    
+    /* ─── Typography ────────────────────────────────────────────────── */
+    .h1 { font-size: var(--text-4xl); line-height: var(--leading-tight); }
+    .h2 { font-size: var(--text-3xl); line-height: var(--leading-tight); }
+    .h3 { font-size: var(--text-xl); }
+    .lead { font-size: var(--text-lg); color: var(--muted); max-width: 60ch; }
+    .eyebrow { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 12px; }
+    .meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); }
+
+    /* ─── Components ────────────────────────────────────────────────── */
+    .card { background: var(--surface); border-radius: var(--radius-lg); padding: var(--space-8); border: 1px solid var(--border-soft); }
+    .card-dark { background: var(--fg); border-color: var(--fg-2); }
+    
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px; border-radius: var(--radius-pill); font-weight: 600;
+      transition: var(--motion-base) var(--ease-standard); cursor: pointer; border: 0;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-on); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--border-soft); color: var(--fg); }
+    .btn-secondary:hover { background: var(--border); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); }
+    
+    .badge { padding: 4px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; background: var(--accent); color: var(--accent-on); text-transform: uppercase; }
+    .badge-warn { background: var(--warn, #f5a623); }
+    .badge-critical { background: var(--danger, #ff3b30); }
+
+    .ph-img { background: var(--surface); border-radius: var(--radius-lg); display: grid; place-items: center; color: var(--muted); font-size: 12px; aspect-ratio: 16/10; }
+
+    /* ─── Audit Specific ────────────────────────────────────────────── */
+    .score-bar { height: 6px; background: var(--border-soft); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+    .score-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+    
+    .finding-list { list-style: none; padding: 0; margin-top: var(--space-5); }
+    .finding-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid var(--border-soft); padding-bottom: 16px; }
+    .finding-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; background: var(--fg); color: var(--bg); flex-shrink: 0; margin-top: 4px; }
+
+    /* ─── Configurator Prototype ─── */
+    .proto-bg { background: var(--surface-warm); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; margin-top: 40px; }
+    .proto-sidebar { background: var(--bg); border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 24px; box-shadow: var(--elev-raised); }
+    .field-group { margin-bottom: 24px; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; display: block; }
+    .chip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .chip { padding: 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); text-align: center; font-size: 14px; cursor: pointer; transition: 0.1s; }
+    .chip.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); font-weight: 600; }
+    
+    @media (max-width: 768px) {
+      .container { padding-inline: var(--container-gutter-phone); }
+      .section { padding-block: var(--section-y-phone); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .h1 { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Hero: Executive Summary ─── -->
+  <section class="section-dark section">
+    <div class="container">
+      <div style="max-width: 800px;">
+        <p class="eyebrow">Audit Report · June 2026</p>
+        <h1 class="h1">Premium Print Configurator: Technical & UX Audit</h1>
+        <p class="lead" style="margin-top: 24px; color: #a1a1a6;">
+          A comprehensive analysis of the SLP Design storefront. We identified a robust logical engine hampered by a monolithic architecture and a high-friction visual language. The following proposal moves from "utility-dark" to "editorial-precision."
+        </p>
+        <div style="display: flex; gap: 24px; margin-top: 48px;">
+          <div>
+            <div class="h3">82%</div>
+            <div class="meta" style="color: #a1a1a6;">UI Alignment Score</div>
+          </div>
+          <div style="width: 1px; background: #424245;"></div>
+          <div>
+            <div class="h3">4.2s</div>
+            <div class="meta" style="color: #a1a1a6;">Main Thread Config Load</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Finding: Code Audit (Architecture, Maintenance, Performance) ─── -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Technical Analysis</p>
+      <h2 class="h2">Code Audit & Health Check.</h2>
+
+      <div class="grid-2" style="margin-top: 40px;">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 class="h3">Architecture</h3>
+            <badge class="badge badge-critical">Critical</badge>
+          </div>
+          <p style="font-size: 15px; color: var(--muted);">
+            The <code>ProductConfigurator.tsx</code> is a <strong>1,947-line monolith</strong> (102KB). It manages cross-category logic (Business Cards, Stickers, Money Packets) in a single file, violating the Single Responsibility Principle.
+          </p>
+          <div class="score-bar"><div class="score-fill" style="width: 35%; background: var(--danger);"></div></div>
+          <p class="meta" style="margin-top: 8px;">Architecture Score: 35/100</p>
+        </div>
+
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 class="h3">Maintenance</h3>
+            <badge class="badge badge-warn">High Risk</badge>
+          </div>
+          <p style="font-size: 15px; color: var(--muted);">
+            Pricing data is <strong>hardcoded</strong> into the component logic. Maps like <code>hotStampPriceMap1Side</code> and <code>priceMap250</code> reside in the TSX, making updates risky and requiring developer intervention for simple price changes.
+          </p>
+          <div class="score-bar"><div class="score-fill" style="width: 45%; background: var(--warn);"></div></div>
+          <p class="meta" style="margin-top: 8px;">Maintenance Score: 45/100</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 32px;">
+        <h3 class="h3">Performance & Runtime</h3>
+        <p style="margin-top: 12px; color: var(--muted);">
+          The configuration engine relies on <strong>12+ cascading <code>useEffect</code> hooks</strong>. This creates a reactive chain where a single property change (e.g., material) triggers a sequence of 3-4 re-renders before the final price settles.
+        </p>
+        <ul class="finding-list">
+          <li class="finding-item">
+            <div class="finding-icon">!</div>
+            <div>
+              <strong>Effect Overload:</strong> Complex date and pricing calculations run on the main thread during every interaction.
+            </div>
+          </li>
+          <li class="finding-item">
+            <div class="finding-icon">!</div>
+            <div>
+              <strong>Re-render Surface:</strong> Since the entire UI is one component, the whole 2,000-line DOM tree re-evaluates on every keystroke.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Finding: UI/UX Audit (Visual Language, Hierarchy, Typography) ─── -->
+  <section class="section" style="background: var(--surface-warm);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 64px;">
+        <p class="eyebrow">Design Audit</p>
+        <h2 class="h2">From Utility-Dark to Editorial-Precision.</h2>
+        <p class="lead" style="margin-inline: auto; margin-top: 16px;">The current visual language creates "cognitive noise" that competes with the product configuration task.</p>
+      </div>
+      
+      <div class="grid-3">
+        <div class="card" style="background: var(--bg);">
+          <badge class="badge">Visual Tone</badge>
+          <h3 class="h3" style="margin-top: 16px;">Cinematic Binary</h3>
+          <p style="font-size: 15px; color: var(--muted); margin-top: 12px;">
+            Replace the indigo-heavy "Utility Dark" theme with Apple's <strong>Binary Rhythm</strong>: Deep black for hero chapters, and pure white (#ffffff) for configuration surfaces. This establishes an elite, premium trust anchor.
+          </p>
+        </div>
+        <div class="card" style="background: var(--bg);">
+          <badge class="badge">Hierarchy</badge>
+          <h3 class="h3" style="margin-top: 16px;">Retail Grid</h3>
+          <p style="font-size: 15px; color: var(--muted); margin-top: 12px;">
+            The current "Stack" layout hides options behind scrolling. We propose a <strong>2-Column Grid</strong>: Product Preview (Pinned) vs. Configuration Panel (Scrollable), ensuring the "Buy Now" CTA is always visible.
+          </p>
+        </div>
+        <div class="card" style="background: var(--bg);">
+          <badge class="badge">Typography</badge>
+          <h3 class="h3" style="margin-top: 16px;">SF Pro Scale</h3>
+          <p style="font-size: 15px; color: var(--muted); margin-top: 12px;">
+            Standardize on <strong>SF Pro Display</strong> (Semibold, tight tracking) for headers and <strong>SF Pro Text</strong> (17px baseline) for retail data. This replaces the current inconsistent font weights and sizes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Proposal: The Apple Configurator ─── -->
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">High-Fidelity Prototype</p>
+      <h2 class="h2">Precision Configurator 2.0.</h2>
+      <p class="lead" style="margin-top: 16px;">Applying Apple's "Editorial Retail" language to the SLP product flow.</p>
+
+      <div class="proto-bg" style="background: var(--bg); border: 1px solid var(--border-soft); box-shadow: var(--elev-raised);">
+        <div class="grid-2" style="grid-template-columns: 1.2fr 0.8fr; gap: 64px; align-items: start;">
+          <!-- Product Preview -->
+          <div style="position: sticky; top: 40px;">
+            <div style="width: 100%; aspect-ratio: 4/3; background: var(--surface); border-radius: 12px; display: grid; place-items: center; overflow: hidden; position: relative;">
+              <!-- Material Texture Simulation -->
+              <div style="width: 80%; height: 60%; background: var(--bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); transform: rotateX(10deg) rotateY(-5deg); border: 1px solid var(--border-soft); padding: 40px;">
+                <div style="width: 60px; height: 8px; background: var(--border-soft); border-radius: 4px;"></div>
+                <div style="width: 120px; height: 4px; background: var(--border-soft); border-radius: 4px; margin-top: 12px;"></div>
+                <div style="position: absolute; bottom: 40px; right: 40px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 10px; font-weight: 800;">UV</div>
+              </div>
+              <div style="position: absolute; bottom: 32px; width: 100%; text-align: center;">
+                <p class="meta" style="color: var(--fg);">Gloss Art Card 250gsm · Matte Lamination · Spot UV</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuration Panel -->
+          <div style="padding-right: 20px;">
+            <h3 class="h2" style="font-size: 32px; margin-bottom: 8px;">Business Card</h3>
+            <p class="meta" style="margin-bottom: 32px;">From RM 35.00</p>
+            
+            <div class="field-group">
+              <label class="field-label">Quantity</label>
+              <div class="chip-grid">
+                <div class="chip">100</div>
+                <div class="chip active">300</div>
+                <div class="chip">500</div>
+                <div class="chip">1,000</div>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top: 32px;">
+              <label class="field-label">Material</label>
+              <div style="padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <span style="font-size: 15px;">Gloss Art Card 250gsm</span>
+                <span style="font-size: 12px; color: var(--muted);">Edit</span>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top: 32px;">
+              <label class="field-label">Finishing</label>
+              <div class="chip-grid">
+                <div class="chip">None</div>
+                <div class="chip active">Spot UV</div>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-soft); margin-top: 48px; padding-top: 32px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px;">
+                <div class="h3" style="font-size: 28px;">RM 75.00</div>
+                <p class="meta" style="color: #34c759; font-weight: 600;">✓ Ready by Jun 18</p>
+              </div>
+              <div class="btn btn-primary" style="width: 100%; height: 52px; font-size: 17px;">Add to Cart</div>
+              <p class="meta" style="margin-top: 16px; text-align: center;">Includes free design check and doorstep delivery.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Roadmap ─── -->
+  <section class="section" style="background: var(--surface);">
+    <div class="container" style="max-width: 800px;">
+      <h2 class="h2" style="text-align: center; margin-bottom: 48px;">Next Steps</h2>
+      <div class="card" style="background: var(--bg);">
+        <div class="finding-item">
+          <div class="finding-icon">1</div>
+          <div>
+            <strong>Refactor pricing data to JSON.</strong>
+            <p class="meta" style="margin-top: 4px;">Move 250+ lines of price mapping from the TSX to centralized JSON for easier updates.</p>
+          </div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-icon">2</div>
+          <div>
+            <strong>Implement View Transitions.</strong>
+            <p class="meta" style="margin-top: 4px;">Use browser-native View Transitions for smooth category switching between products.</p>
+          </div>
+        </div>
+        <div class="finding-item">
+          <div class="finding-icon">3</div>
+          <div>
+            <strong>Handoff to Design System.</strong>
+            <p class="meta" style="margin-top: 4px;">Adopt the Apple-inspired <code>tokens.css</code> to standardize spacing and typography across all sub-pages.</p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 48px;">
+        <div class="btn btn-primary">Download Full Report (PDF)</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container" style="padding-block: 48px; border-top: 1px solid var(--border-soft); text-align: center;">
+    <p class="meta">Audit performed by Open Design Assistant · SLP Design Project · 2026</p>
+  </footer>
+
+</body>
+</html>

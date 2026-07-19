@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "SLP Design · Code & UX Audit Report",
+  "entry": "audit-report-2.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "primary": true,
+  "createdAt": "2026-06-14T09:08:17.370Z",
+  "updatedAt": "2026-06-14T09:08:17.375Z",
+  "sourceSkillId": "agent-browser",
+  "designSystemId": "apple",
+  "metadata": {
+    "identifier": "audit-report",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}
