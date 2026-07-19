@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
               </h4>
               <div className="flex flex-col gap-3.5">
                 <a 
-                  href="https://www.facebook.com/slpdesign" 
+                  href="https://www.facebook.com/SLPXDesign/" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="flex items-center gap-2.5 text-[14px] text-stone-600 dark:text-neutral-300 hover:text-stone-900 dark:hover:text-white font-sans font-medium transition-colors duration-200"
