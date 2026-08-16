@@ -260,6 +260,37 @@
     a:focus-visible, button:focus-visible { outline-width: 2px; }
     .focus-ring:focus-visible { outline: 2px solid #c1ff72; outline-offset: 2px; border-radius: 4px; }
 
+    @media (max-width: 639px) {
+      .mobile-compact-config .grid.grid-cols-1.sm\:grid-cols-3 {
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .mobile-compact-config .sm\:col-span-2 {
+        grid-column: span 1 / span 1;
+      }
+      .mobile-compact-config .grid.grid-cols-1.sm\:grid-cols-3 > label,
+      .mobile-compact-config .grid.grid-cols-1.sm\:grid-cols-3 > span {
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+      }
+      .mobile-compact-config select,
+      .mobile-compact-config input:not([type="radio"]):not([type="checkbox"]) {
+        min-height: 44px;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
   </style>
   <script type="importmap">
 {
@@ -272,13 +303,15 @@
 }
 </script>
   <script>
-    document.addEventListener('mousemove', (e) => {
-      document.querySelectorAll('.spotlight-card').forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      document.addEventListener('mousemove', (e) => {
+        document.querySelectorAll('.spotlight-card').forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+          card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        });
       });
-    });
+    }
   </script>
 </head>
 

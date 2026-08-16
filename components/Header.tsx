@@ -34,6 +34,8 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownTimeoutRef = useRef<any>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     if (dropdownTimeoutRef.current) {
@@ -56,8 +58,26 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [isMobileMenuOpen]);
 
   const handleSupportClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -87,21 +107,44 @@ const Header: React.FC = () => {
 
   const mobileMenu = (
     <div
-      className={`fixed inset-0 bg-[#f5f5f5]/98 dark:bg-[#171717]/98 backdrop-blur-xl z-[9999] transition-all duration-300 md:hidden flex flex-col pt-24 px-6 ${
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+      className={`fixed inset-0 min-h-[100dvh] bg-[#f5f5f5]/98 dark:bg-[#171717]/98 backdrop-blur-xl z-[9999] transition-all duration-300 md:hidden flex flex-col px-5 pt-[calc(1rem+env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] ${
         isMobileMenuOpen ? 'opacity-100 pointer-events-auto translate-y-0' : 'opacity-0 pointer-events-none -translate-y-4'
       }`}
     >
-      <div className="flex flex-col gap-6 text-lg font-display h-full">
-        <div className="font-semibold text-neutral-400 dark:text-neutral-500 text-sm uppercase tracking-wider mb-2">Products</div>
-        <div className="grid grid-cols-1 gap-2 overflow-y-auto max-h-[60vh] pb-4">
+      <div className="flex flex-col text-lg font-display h-full min-h-0">
+        <div className="flex items-center justify-between min-h-[44px] mb-6">
+          <span className="font-semibold text-neutral-900 dark:text-neutral-100 text-lg">Menu</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-850 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 transition-colors border border-stone-200/50 dark:border-neutral-800/50"
+              aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
+            >
+              {theme === 'light' ? <Moon className="w-5 h-5" strokeWidth={1.8} /> : <Sun className="w-5 h-5" strokeWidth={1.8} />}
+            </button>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-neutral-900 text-[#c1ff72] transition-colors"
+              aria-label="Close navigation menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="font-semibold text-neutral-400 dark:text-neutral-500 text-xs uppercase tracking-wider mb-3">Products</div>
+        <div className="grid grid-cols-1 gap-1 overflow-y-auto min-h-0 pr-1">
           {menuItems.map((item) => (
             <Link
               key={item.id}
               to={`/${item.id}`}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-3 py-3 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white border-b border-neutral-200/50 dark:border-neutral-800/80 last:border-0"
+              className="flex min-h-[48px] items-center gap-3 rounded-xl px-2 py-2 text-neutral-700 dark:text-neutral-200 hover:bg-white/70 dark:hover:bg-neutral-800/70 hover:text-neutral-900 dark:hover:text-white transition-colors"
             >
-              <div className="p-1.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500">
+              <div className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400">
                 <item.icon className="w-5 h-5" />
               </div>
               {item.label}
@@ -109,14 +152,33 @@ const Header: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-auto pb-8 w-full">
-          <button
+        <div className="mt-5 border-t border-neutral-200/70 dark:border-neutral-800 pt-4 space-y-2">
+          <Link
+            to="/"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="w-full py-3 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+            className="flex min-h-[44px] items-center rounded-xl px-3 text-sm font-medium text-neutral-700 dark:text-neutral-200 hover:bg-white/70 dark:hover:bg-neutral-800/70"
           >
-            <X className="w-4 h-4" />
-            Close Menu
-          </button>
+            Home
+          </Link>
+          <a
+            href="#contact"
+            onClick={(event) => {
+              setIsMobileMenuOpen(false);
+              handleSupportClick(event);
+            }}
+            className="flex min-h-[44px] items-center rounded-xl px-3 text-sm font-medium text-neutral-700 dark:text-neutral-200 hover:bg-white/70 dark:hover:bg-neutral-800/70"
+          >
+            Contact
+          </a>
+          <a
+            href="https://wa.me/601156389800?text=Hi%20SLP%20Design%2C%20I%20have%20an%20inquiry%20about%20my%20printing%20project!"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 text-sm font-semibold text-[#c1ff72] active:scale-[0.98] transition-transform"
+          >
+            <MessageCircle className="w-5 h-5" />
+            Chat on WhatsApp
+          </a>
         </div>
       </div>
     </div>
@@ -125,11 +187,11 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-[60] glass-panel dark:bg-[#171717]/85 dark:border-neutral-800/80 w-full opacity-0 animate-slide-down">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 h-16 lg:h-20 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 h-16 lg:h-20 flex items-center justify-between gap-3">
 
-          <Link to="/" onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })} className="flex items-center gap-3 z-[61]">
+          <Link to="/" onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })} className="flex min-w-0 items-center gap-3 z-[61]">
             <motion.span 
-              className="font-semibold text-neutral-900 dark:text-neutral-100 hover:text-[#c1ff72] dark:hover:text-[#c1ff72] transition-colors duration-300 tracking-tight font-display text-xl lg:text-2xl cursor-pointer"
+              className="font-semibold text-neutral-900 dark:text-neutral-100 hover:text-[#c1ff72] dark:hover:text-[#c1ff72] transition-colors duration-300 tracking-tight font-display text-lg sm:text-xl lg:text-2xl cursor-pointer whitespace-nowrap"
               whileHover={{ 
                 x: 4,
                 scale: 1.05
@@ -158,11 +220,11 @@ const Header: React.FC = () => {
             <a href="#contact" onClick={handleSupportClick} className="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300 text-sm font-medium font-montserrat">Contact</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-850 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors border border-stone-200/50 dark:border-neutral-800/50 focus:outline-none"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-850 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition-colors border border-stone-200/50 dark:border-neutral-800/50 focus:outline-none"
               aria-label={theme === 'light' ? "Switch to dark theme" : "Switch to light theme"}
             >
               {theme === 'light' ? <Moon className="w-4 h-4" strokeWidth={1.8} /> : <Sun className="w-4 h-4" strokeWidth={1.8} />}
@@ -173,14 +235,15 @@ const Header: React.FC = () => {
               href="https://wa.me/601156389800?text=Hi%20SLP%20Design%2C%20I%20have%20an%20inquiry%20about%20my%20printing%20project!"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-neutral-900 text-[#c1ff72] hover:bg-neutral-800 transition-all font-medium px-4 py-2 lg:px-5 lg:py-2.5 rounded-lg text-xs lg:text-sm flex items-center gap-2 group shrink-0"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-neutral-900 text-[#c1ff72] hover:bg-neutral-800 transition-all font-medium sm:h-auto sm:w-auto sm:px-4 sm:py-2 lg:px-5 lg:py-2.5 text-xs lg:text-sm gap-2 group shrink-0"
+              aria-label="Chat with SLP Design on WhatsApp"
             >
-              Chat with Us
+              <span className="hidden sm:inline">Chat with Us</span>
               <MessageCircle className="w-4 h-4" />
             </a>
 
             <button
-              className="md:hidden text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white focus:outline-none"
+              className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-850 hover:text-neutral-900 dark:hover:text-white focus:outline-none"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}

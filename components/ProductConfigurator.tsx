@@ -159,7 +159,6 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ activeCategor
   const [bizCustomWidth, setBizCustomWidth] = useState('89');
   const [previewSide, setPreviewSide] = useState<'front' | 'back'>('front');
   const [isPreviewZoomed, setIsPreviewZoomed] = useState(false);
-  const [currentMobileStep, setCurrentMobileStep] = useState(1);
   const [stickerLamination, setStickerLamination] = useState('None');
 
   // Bill Book State
@@ -1118,17 +1117,27 @@ Please assist with this order.`;
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-32 lg:pb-12 scroll-mt-24" id="order">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-44 lg:pb-12 scroll-mt-24" id="order">
       {/* Horizontal Category Switcher */}
-      <div className="mb-6 border-b border-stone-200 dark:border-neutral-800 pb-5">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="mb-4 border-b border-stone-200 dark:border-neutral-800 pb-4">
+        <label htmlFor="mobile-product-category" className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-neutral-400 md:hidden">Product</label>
+        <select
+          id="mobile-product-category"
+          value={activeCategory}
+          onChange={(event) => navigate(`/${event.target.value}`)}
+          className="min-h-[44px] w-full rounded-lg border border-stone-200 bg-white px-3 text-sm font-medium text-stone-800 dark:border-neutral-700 dark:bg-neutral-850 dark:text-neutral-200 md:hidden"
+        >
+          {activeCategory === 'billbook' && <option value="billbook">Bill Book</option>}
+          {CATEGORIES.map((cat) => <option key={cat.id} value={cat.id}>{cat.label}</option>)}
+        </select>
+        <div className="hidden md:flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 -mx-4 px-4 sm:mx-0 sm:px-0" aria-label="Product categories">
           {CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
               <button
                 key={cat.id}
                 onClick={() => navigate(`/${cat.id}`)}
-                className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-body font-medium transition-all duration-300 whitespace-nowrap border ${
+                className={`min-h-[44px] px-5 py-2.5 rounded-full text-xs sm:text-sm font-body font-medium transition-all duration-300 whitespace-nowrap border touch-manipulation ${
                   isActive
                     ? 'bg-neutral-900 dark:bg-neutral-100 text-[#c1ff72] dark:text-neutral-900 shadow-lg shadow-stone-900/10'
                     : 'bg-white/80 dark:bg-neutral-900/80 border-stone-200 dark:border-neutral-800 text-stone-500 dark:text-neutral-400 hover:text-stone-800 dark:hover:text-neutral-200 hover:border-stone-300 dark:hover:border-neutral-700'
@@ -1144,52 +1153,18 @@ Please assist with this order.`;
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
 
         {/* LEFT COLUMN - CONFIGURATION */}
-        <div className="lg:col-span-8 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-stone-200 dark:border-neutral-800 rounded-xl p-5 sm:p-8 shadow-2xl dark:shadow-none">
-          <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-stone-100 mb-6 sm:mb-8 font-body">Product Configuration</h2>
-
-          {/* Mobile Step Indicators */}
-          <div className="md:hidden mb-8 bg-white/30 dark:bg-neutral-950/30 border border-stone-200/50 dark:border-neutral-800/50 rounded-xl p-4">
-            <div className="flex items-center justify-between relative">
-              {/* Connecting Line Background */}
-              <div className="absolute left-6 right-6 top-3.5 -translate-y-1/2 h-0.5 bg-stone-100 dark:bg-neutral-800 -z-10"></div>
-              {/* Animated Progress Line */}
-              <div 
-                className="absolute left-6 top-3.5 -translate-y-1/2 h-0.5 bg-neutral-900 dark:bg-neutral-100 transition-all duration-300 -z-10"
-                style={{ width: `${(currentMobileStep - 1) * 50}%` }}
-              ></div>
-
-              {[1, 2, 3].map((step) => (
-                <button
-                  key={step}
-                  type="button"
-                  onClick={() => setCurrentMobileStep(step)}
-                  className="flex flex-col items-center gap-1.5 relative z-10"
-                >
-                  <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-all duration-300 ${
-                    currentMobileStep === step
-                      ? 'bg-neutral-800 dark:bg-neutral-100 text-[#c1ff72] dark:text-neutral-900 shadow-md shadow-neutral-900/20'
-                      : currentMobileStep > step
-                        ? 'bg-stone-200 dark:bg-neutral-800 border-stone-300 dark:border-neutral-700 text-stone-700 dark:text-neutral-300'
-                        : 'bg-white dark:bg-neutral-900 border-stone-200 dark:border-neutral-800 text-stone-400 dark:text-neutral-500'
-                  }`}>
-                    {currentMobileStep > step ? '✓' : step}
-                  </span>
-                  <span className={`text-[10px] font-body font-medium transition-colors duration-300 ${
-                    currentMobileStep === step ? 'text-neutral-900 dark:text-neutral-100 font-semibold' : 'text-stone-400 dark:text-neutral-500'
-                  }`}>
-                    {step === 1 ? 'Specs' : step === 2 ? 'Finishes' : 'Review'}
-                  </span>
-                </button>
-              ))}
-            </div>
-        </div>
+        <div className="mobile-compact-config lg:col-span-8 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-stone-200 dark:border-neutral-800 rounded-xl p-4 sm:p-6 shadow-2xl dark:shadow-none">
+          <div className="mb-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-stone-100 font-body">Build your order</h2>
+            <p className="mt-1 text-sm leading-relaxed text-stone-500 dark:text-neutral-400 font-body">Choose your print details below. Your price updates as you go.</p>
+          </div>
 
           <div>
-            {/* STEP 1: Specs */}
-            <div className={`space-y-6 ${currentMobileStep === 1 ? 'block' : 'hidden md:block'}`}>
+            {/* ESSENTIAL PRINT DETAILS */}
+            <div className="space-y-4">
               {activeCategory === 'billbook' ? (
                 <>
-                  <div className="space-y-6 mb-4">
+                  <div className="space-y-4 mb-3">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-center">
                       <label className="text-stone-500 dark:text-neutral-400 font-medium font-body pt-1 sm:pt-0">Size</label>
                       <div className="sm:col-span-2">
@@ -1527,17 +1502,12 @@ Please assist with this order.`;
               </div>
             )}
             
-            {activeCategory === 'label-sticker' && (
-              <div className="flex items-start gap-2 text-stone-500 dark:text-neutral-400 text-[11px] bg-stone-100 dark:bg-neutral-950/50 p-2 rounded-lg border border-stone-200 dark:border-neutral-800 mt-2 font-body">
-                <span>The longest dimension of the sticker must not exceed 285mm.</span>
-              </div>
-            )}
             </>
             )}
             </div>
 
-            {/* STEP 2: Finishes */}
-            <div className={`space-y-6 md:mt-10 ${currentMobileStep === 2 ? 'block' : 'hidden md:block'}`}>
+            {/* PRINT FINISHES AND ARTWORK */}
+            <div className="mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800">
               {activeCategory === 'billbook' ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-center">
@@ -1789,7 +1759,7 @@ Please assist with this order.`;
 
             {/* FINISHING SECTION: CONDITIONAL */}
             {activeCategory === 'marketing' ? (
-              <div className="space-y-6 mt-8 pt-6 border-t border-stone-200 dark:border-neutral-800">
+              <div className="space-y-4 mt-6 pt-5 border-t border-stone-200 dark:border-neutral-800">
                 <div className="bg-stone-100 dark:bg-neutral-850 border border-stone-200 dark:border-neutral-800 text-stone-600 dark:text-neutral-400 px-4 py-2 rounded font-medium font-body uppercase text-sm tracking-wider">
                   Optional Finishing
                 </div>
@@ -2160,8 +2130,8 @@ Please assist with this order.`;
             </div>
           </div>
 
-          {/* STEP 3: Review */}
-          <div className={`space-y-6 md:mt-10 ${currentMobileStep === 3 ? 'block' : 'hidden md:block'}`}>
+          {/* QUANTITY AND OPTIONAL DETAILS */}
+          <div className="mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800">
             {/* Quantity */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-start">
               <label className="text-stone-500 dark:text-neutral-400 font-medium font-body pt-2.5">
@@ -2277,58 +2247,12 @@ Please assist with this order.`;
               </div>
             )}
 
-            {/* CROSS-SELLING HINT */}
-            <div className="mt-8 bg-gradient-to-r from-stone-100 to-stone-100 dark:from-neutral-850 dark:to-neutral-850 border border-stone-200 dark:border-neutral-800 rounded-xl p-4 flex items-start sm:items-center gap-3">
-              <div className="bg-neutral-900/20 dark:bg-neutral-100/10 p-2 rounded-lg shrink-0">
-                <Box className="w-5 h-5 text-neutral-900 dark:text-neutral-100" />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold text-stone-800 dark:text-neutral-200 font-body">Boost your brand presence!</h4>
-                <p className="text-xs text-stone-500 dark:text-neutral-400 mt-0.5 font-body">
-                  {activeCategory === 'business' ? "Customers who order Business Cards often buy Flyers. Need promotional materials for an event?" : 
-                   activeCategory === 'marketing' ? "Take your marketing further with custom Stickers matching your Flyer design." : 
-                   activeCategory === 'label-sticker' ? "Labeling your products? We also offer stunning Business Cards for your networking." : 
-                   "Need more marketing materials? Check out our other fast-printing services."}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Step Navigation Buttons */}
-          <div className="md:hidden mt-8 flex items-center justify-between pt-4 border-t border-stone-200">
-            <button
-              type="button"
-              onClick={() => setCurrentMobileStep(prev => Math.max(1, prev - 1))}
-              disabled={currentMobileStep === 1}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold font-body border border-stone-200 transition-colors ${
-                currentMobileStep === 1 ? 'text-stone-400/70 border-stone-200 cursor-not-allowed' : 'text-stone-700 hover:bg-stone-100'
-              }`}
-            >
-              Previous Step
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (currentMobileStep === 3) {
-                  handleCheckout();
-                } else {
-                  setCurrentMobileStep(prev => Math.min(3, prev + 1));
-                }
-              }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold font-body transition-all ${
-                currentMobileStep === 3 
-                  ? 'bg-neutral-800 text-[#c1ff72] active:scale-95'
-                  : 'bg-[#c1ff72] text-neutral-900 hover:opacity-90'
-              }`}
-            >
-              {currentMobileStep === 3 ? 'Proceed to Order' : 'Next Step'}
-            </button>
           </div>
         </div>
         </div>
 
         {/* RIGHT COLUMN - SUMMARY */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="hidden lg:block lg:col-span-4 space-y-6">
           <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-stone-200 dark:border-neutral-800 rounded-xl p-6 shadow-2xl sticky top-28 self-start">
 
             <div className="flex items-center justify-between mb-6">
@@ -2559,16 +2483,16 @@ Please assist with this order.`;
       </div>
 
       {/* MOBILE FIXED BOTTOM BAR */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-stone-100/95 dark:bg-neutral-900/95 backdrop-blur-xl border-t border-stone-200 dark:border-neutral-800 p-4 lg:hidden safe-area-pb">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-stone-100/95 dark:bg-neutral-900/95 backdrop-blur-xl border-t border-stone-200 dark:border-neutral-800 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
         {/* Surface Validation Errors in Mobile Order Bar */}
         {sizeError && (
-          <div className="max-w-7xl mx-auto mb-3 px-3 py-2 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-xs rounded-lg flex items-center gap-2">
+          <div role="alert" className="max-w-7xl mx-auto mb-3 px-3 py-2 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-xs rounded-lg flex items-center gap-2">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-red-400 animate-pulse" />
             <span className="font-body">{sizeError}</span>
           </div>
         )}
         <div className="flex items-center gap-4 max-w-7xl mx-auto">
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0" aria-live="polite">
             <div className="text-[10px] text-stone-500 dark:text-neutral-400 uppercase tracking-wider font-medium font-body mb-0.5">Est. Total</div>
             <div className="text-2xl font-bold text-stone-900 dark:text-stone-100 leading-none font-body">{formatPrice(price)}</div>
             <div className="text-[10px] text-stone-400 dark:text-neutral-500 mt-1 truncate font-body">
