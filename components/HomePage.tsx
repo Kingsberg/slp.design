@@ -4,6 +4,7 @@ import Hero from './Hero';
 import TrustBar from './TrustBar';
 import BrandPromise from './BrandPromise';
 import Services from './Services';
+import HowOrderingWorks from './HowOrderingWorks';
 import WhyUs from './WhyUs';
 
 const HomePage: React.FC = () => {
@@ -17,6 +18,7 @@ const HomePage: React.FC = () => {
       <Hero />
       <TrustBar />
       <BrandPromise />
+      <HowOrderingWorks />
       <Services />
       <WhyUs />
     </motion.div>

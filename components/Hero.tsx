@@ -82,19 +82,19 @@ const Hero: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           <div className="hero-badge inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium bg-white dark:bg-neutral-900 border-stone-200 dark:border-neutral-800 text-stone-600 dark:text-neutral-300">
             <span className="w-2 h-2 rounded-full bg-[#c1ff72] animate-pulse-slow"></span>
-            Premium Printing Services Malaysia
+            Premium printing, delivered across Malaysia
           </div>
           <h1 className="hero-title leading-[0.95] lg:text-7xl xl:text-8xl text-5xl font-medium text-stone-900 dark:text-stone-100 tracking-tighter">
-            Print that leaves a{' '}
+            From idea to print,{' '}
             <span className="text-slate-950 dark:text-white font-display relative inline-block">
-              lasting impression
+              without the guesswork
               <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#c1ff72] -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
                 <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" opacity="0.4"></path>
               </svg>
             </span>
           </h1>
           <p className="hero-desc leading-relaxed lg:text-xl text-lg font-normal text-stone-500 dark:text-neutral-400 font-montserrat max-w-2xl">
-            From premium business cards to large-format displays. SLP Design crafts physical brand moments with high-fidelity precision and speed — delivered across Malaysia.
+            Choose a product, configure your specifications, and get a clear estimate before our print team takes it from there.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-2">
             <a href="#products" className="hero-cta inline-flex items-center justify-center gap-2 bg-neutral-900 text-[#c1ff72] hover:bg-neutral-800 transition-all font-medium px-4 py-2 lg:px-5 lg:py-2.5 rounded-lg text-xs lg:text-sm group">
@@ -102,8 +102,13 @@ const Hero: React.FC = () => {
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </a>
             <a href="https://wa.me/601156389800?text=Hi%20SLP%20Design%2C%20I%20have%20an%20inquiry%20about%20my%20printing%20project!" target="_blank" rel="noopener noreferrer" className="hero-cta inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-stone-300 dark:border-neutral-700 font-medium text-stone-600 dark:text-neutral-350 hover:bg-stone-200/50 dark:hover:bg-neutral-800/50 transition-colors text-xs lg:text-sm">
-              Get a Quote
+              Talk to a print expert
             </a>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-xs font-medium text-stone-500 dark:text-neutral-400">
+            <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#6d9d00] dark:text-[#c1ff72]" /> Live estimate</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#6d9d00] dark:text-[#c1ff72]" /> Artwork check</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#6d9d00] dark:text-[#c1ff72]" /> Malaysia delivery</span>
           </div>
         </div>
 

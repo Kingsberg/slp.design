@@ -8,6 +8,13 @@ import { useGSAP } from '@gsap/react';
 // Register plugins
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+const productMeta = {
+  business: { fit: 'For professional networking', mode: 'Live estimate' },
+  labels: { fit: 'For packaging and products', mode: 'Live estimate' },
+  flyers: { fit: 'For campaigns and events', mode: 'Live estimate' },
+  inkjet: { fit: 'For large-format visibility', mode: 'Live estimate' },
+};
+
 const Services: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -93,6 +100,10 @@ const Services: React.FC = () => {
               <div className="flex text-white bg-white/10 w-12 h-12 border border-white/10 rounded-2xl mb-6 backdrop-blur-md items-center justify-center">
                 <Layers className="w-6 h-6" strokeWidth={1.5} />
               </div>
+              <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
+                <span className="rounded-full bg-[#c1ff72] px-2.5 py-1 text-stone-900">{productMeta.business.mode}</span>
+                <span className="rounded-full border border-white/20 px-2.5 py-1 text-stone-300">{productMeta.business.fit}</span>
+              </div>
               <h3 className="lg:text-3xl text-2xl font-bold text-white font-display mb-3">Business Cards</h3>
               <p className="text-stone-300 mb-6 text-sm lg:text-base leading-relaxed max-w-sm">Make every introduction count. Premium paper stocks, matte lamination, spot UV, and hot stamping.</p>
               <span className="inline-flex items-center text-white font-medium text-sm hover:underline underline-offset-4 group/link">
@@ -107,6 +118,10 @@ const Services: React.FC = () => {
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-white/40 backdrop-blur-sm flex items-center justify-center mb-6 text-stone-900">
                   <Tag className="w-6 h-6" strokeWidth={1.5} />
+                </div>
+                <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider text-stone-700">
+                  <span className="rounded-full bg-neutral-900 px-2.5 py-1 text-[#c1ff72]">{productMeta.labels.mode}</span>
+                  <span className="rounded-full border border-stone-900/15 px-2.5 py-1">{productMeta.labels.fit}</span>
                 </div>
                 <h3 className="lg:text-3xl text-2xl font-bold text-stone-900 font-display mb-3">Labels &amp; Stickers</h3>
                 <p className="text-stone-800 text-sm lg:text-base mb-6 leading-relaxed max-w-xs">Custom die-cut stickers, waterproof PP stocks, and product labels that fit your brand perfectly.</p>
@@ -170,6 +185,10 @@ const Services: React.FC = () => {
               <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-850 flex items-center justify-center mb-6 text-stone-950 dark:text-stone-100 shadow-sm border border-stone-100 dark:border-neutral-800">
                 <FileText className="w-6 h-6" strokeWidth={1.5} />
               </div>
+              <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
+                <span className="rounded-full bg-neutral-900 px-2.5 py-1 text-[#c1ff72]">{productMeta.flyers.mode}</span>
+                <span className="rounded-full border border-stone-200 px-2.5 py-1 text-stone-500 dark:border-neutral-800 dark:text-neutral-400">{productMeta.flyers.fit}</span>
+              </div>
               <h3 className="lg:text-2xl text-xl font-bold text-stone-900 dark:text-stone-100 font-display mb-2">Flyers &amp; Brochures</h3>
               <p className="text-stone-500 dark:text-neutral-400 text-sm leading-relaxed mb-4">Vibrant marketing folders and brochures. Bi-fold, tri-fold, and custom paper weights.</p>
               <span className="inline-flex items-center text-stone-900 dark:text-stone-200 font-semibold text-sm hover:underline group/link">
@@ -195,6 +214,10 @@ const Services: React.FC = () => {
             <div className="z-10 relative">
               <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-850 flex items-center justify-center mb-6 text-stone-950 dark:text-stone-100 shadow-sm border border-stone-100 dark:border-neutral-800">
                 <Printer className="w-6 h-6" strokeWidth={1.5} />
+              </div>
+              <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
+                <span className="rounded-full bg-neutral-900 px-2.5 py-1 text-[#c1ff72]">{productMeta.inkjet.mode}</span>
+                <span className="rounded-full border border-stone-200 px-2.5 py-1 text-stone-500 dark:border-neutral-800 dark:text-neutral-400">{productMeta.inkjet.fit}</span>
               </div>
               <h3 className="lg:text-2xl text-xl font-bold text-stone-900 dark:text-stone-100 font-display mb-2">Inkjet Printing</h3>
               <p className="text-stone-500 dark:text-neutral-400 text-sm leading-relaxed mb-4">Large format signs, tarpaulins, event banners, and promotional buntings.</p>
