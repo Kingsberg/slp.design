@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Check, MessageCircle, FileText, Calendar, X, AlertTriangle, Box, Layout, ChevronDown, ChevronUp, ClipboardCheck, Eye } from 'lucide-react';
+import { Check, MessageCircle, FileText, Calendar, X, AlertTriangle, Box, Layout, ChevronDown, ChevronUp, ClipboardCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { PRODUCT_DATA, LABEL_QTY_STEPS, ProductConfigData } from '../data/productData';
@@ -176,9 +176,9 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ activeCategor
   const [bbNumberError, setBbNumberError] = useState<string | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
-  // Mobile browsing helpers: keep the long configurator scannable without changing desktop behavior.
-  const [mobileStep, setMobileStep] = useState(0);
+  // Mobile browsing helpers: keep the full configurator available while reducing visual clutter.
   const [isMobileReviewOpen, setIsMobileReviewOpen] = useState(false);
+  const [mobileSections, setMobileSections] = useState({ product: true, finishing: true, quantity: true });
 
   // Helper to determine available quantities
   const getQuantitiesFor = (cat: string, currentSize: string, currentMaterial?: string) => {
@@ -291,9 +291,9 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ activeCategor
     return config.printColors[0];
   }, [activeCategory, selectedType, config.printColors]);
 
-  // Reset the mobile flow when the visitor switches product categories.
+  // Reset section state when the visitor switches product categories.
   useEffect(() => {
-    setMobileStep(0);
+    setMobileSections({ product: true, finishing: true, quantity: true });
     setIsMobileReviewOpen(false);
   }, [activeCategory]);
 
@@ -1142,7 +1142,22 @@ Please assist with this order.`;
     ];
   }, [activeCategory, bizCustomHeight, bizCustomWidth, config, customHeight, customWidth, designOption, finishing, flyerFolding, flyerHolePunching, flyerHotStamping, material, quantity, selectedType, size, stickerLamination]);
 
-  const mobileSteps = ['Product', 'Finishing', 'Quantity', 'Review'];
+  const mobileSectionMeta = [
+    { key: 'product' as const, label: 'Product & size', target: 'config-step-product' },
+    { key: 'finishing' as const, label: 'Material & finishing', target: 'config-step-finishing' },
+    { key: 'quantity' as const, label: 'Quantity & details', target: 'config-step-quantity' },
+  ];
+
+  const toggleMobileSection = (section: 'product' | 'finishing' | 'quantity') => {
+    setMobileSections((current) => ({ ...current, [section]: !current[section] }));
+  };
+
+  const jumpToMobileSection = (section: 'product' | 'finishing' | 'quantity') => {
+    setMobileSections((current) => ({ ...current, [section]: true }));
+    window.requestAnimationFrame(() => {
+      document.getElementById(`config-step-${section}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
 
   const renderMobileReview = () => (
     <div className="rounded-2xl border border-stone-200 dark:border-neutral-800 bg-stone-50/80 dark:bg-neutral-950/40 p-4 sm:p-5">
@@ -1229,29 +1244,57 @@ Please assist with this order.`;
           </div>
 
           <div>
-            {/* Mobile progressive flow. Desktop keeps all sections visible as before. */}
-            <div className="mb-6 lg:hidden">
-              <div className="flex items-center justify-between gap-2" aria-label="Order progress">
-                {mobileSteps.map((step, index) => (
-                  <button
-                    key={step}
-                    type="button"
-                    onClick={() => setMobileStep(index)}
-                    className="group flex min-w-0 flex-1 flex-col items-center gap-1.5"
-                    aria-current={mobileStep === index ? 'step' : undefined}
-                  >
-                    <span className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold transition-colors ${mobileStep === index ? 'border-neutral-900 bg-neutral-900 text-[#c1ff72] dark:border-[#c1ff72] dark:bg-[#c1ff72] dark:text-neutral-900' : mobileStep > index ? 'border-[#c1ff72] bg-[#c1ff72]/20 text-stone-700 dark:text-neutral-200' : 'border-stone-300 text-stone-400 dark:border-neutral-700 dark:text-neutral-500'}`}>{index + 1}</span>
-                    <span className={`truncate text-[10px] font-medium ${mobileStep === index ? 'text-stone-900 dark:text-stone-100' : 'text-stone-400 dark:text-neutral-500'}`}>{step}</span>
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 h-1 overflow-hidden rounded-full bg-stone-200 dark:bg-neutral-800">
-                <div className="h-full rounded-full bg-[#c1ff72] transition-all duration-200" style={{ width: `${((mobileStep + 1) / mobileSteps.length) * 100}%` }} />
+            {/* Hybrid mobile navigation: keep the full page, but make long sections easy to scan. */}
+            <div className="mb-4 rounded-xl border border-stone-200 bg-stone-50/80 p-3 dark:border-neutral-800 dark:bg-neutral-950/40 lg:hidden" aria-live="polite">
+              <div className="flex items-end justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[10px] uppercase tracking-wider text-stone-500 dark:text-neutral-400">Current estimate</div>
+                  <div className="mt-1 text-2xl font-bold leading-none text-stone-900 dark:text-stone-100 font-body">{formatPrice(price)}</div>
+                </div>
+                <div className="text-right text-xs text-stone-500 dark:text-neutral-400">
+                  <div className="font-semibold text-stone-800 dark:text-neutral-200">{quantity} pcs</div>
+                  <div className="mt-0.5">Ships {shipmentDateData.dateString.split(',')[1] || shipmentDateData.dateString}</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileReviewOpen(true)}
+                  className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg bg-neutral-900 px-3 text-xs font-bold text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900"
+                >
+                  <ClipboardCheck className="h-3.5 w-3.5" />
+                  Review
+                </button>
               </div>
             </div>
 
+            <nav className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden" aria-label="Jump to order section">
+              {mobileSectionMeta.map((section) => (
+                <button
+                  key={section.key}
+                  type="button"
+                  onClick={() => jumpToMobileSection(section.key)}
+                  className="min-h-10 shrink-0 rounded-full border border-stone-200 bg-white px-3.5 text-xs font-semibold text-stone-600 transition-colors active:scale-[0.98] dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300"
+                >
+                  {section.label}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setIsMobileReviewOpen(true)}
+                className="min-h-10 shrink-0 rounded-full border border-[#c1ff72] bg-[#c1ff72]/20 px-3.5 text-xs font-bold text-stone-800 active:scale-[0.98] dark:text-neutral-100"
+              >
+                Review order
+              </button>
+            </nav>
+
             {/* ESSENTIAL PRINT DETAILS */}
-            <div className={`space-y-4 ${mobileStep === 0 ? 'block' : 'hidden lg:block'}`} id="config-step-product">
+            <section id="config-step-product" className="scroll-mt-28">
+              <div className="mb-3 flex items-center justify-between gap-3 border-b border-stone-200 pb-3 dark:border-neutral-800 lg:hidden">
+                <button type="button" onClick={() => toggleMobileSection('product')} className="flex min-h-10 flex-1 items-center justify-between text-left text-sm font-bold text-stone-900 dark:text-stone-100">
+                  <span>Product &amp; size</span>
+                  {mobileSections.product ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </button>
+              </div>
+              <div className={`space-y-4 ${mobileSections.product ? 'block' : 'hidden lg:block'}`}>
               {activeCategory === 'billbook' ? (
                 <>
                   <div className="space-y-4 mb-3">
@@ -1594,10 +1637,18 @@ Please assist with this order.`;
             
             </>
             )}
-            </div>
+              </div>
+            </section>
 
             {/* PRINT FINISHES AND ARTWORK */}
-            <div className={`mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileStep === 1 ? 'block' : 'hidden lg:block'}`} id="config-step-finishing">
+            <section id="config-step-finishing" className="scroll-mt-28">
+              <div className="mb-3 mt-8 flex items-center justify-between gap-3 border-y border-stone-200 py-3 dark:border-neutral-800 lg:hidden">
+                <button type="button" onClick={() => toggleMobileSection('finishing')} className="flex min-h-10 flex-1 items-center justify-between text-left text-sm font-bold text-stone-900 dark:text-stone-100">
+                  <span>Material &amp; finishing</span>
+                  {mobileSections.finishing ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </button>
+              </div>
+              <div className={`space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileSections.finishing ? 'block' : 'hidden lg:block'}`}>
               {activeCategory === 'billbook' ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-center">
@@ -2218,11 +2269,19 @@ Please assist with this order.`;
                 )}
               </div>
             </div>
-          </div>
+              </div>
+            </section>
 
-          {/* QUANTITY AND OPTIONAL DETAILS */}
-          <div className={`mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileStep === 2 ? 'block' : 'hidden lg:block'}`} id="config-step-quantity">
-            {/* Quantity */}
+            {/* QUANTITY AND OPTIONAL DETAILS */}
+            <section id="config-step-quantity" className="scroll-mt-28">
+              <div className="mb-3 mt-8 flex items-center justify-between gap-3 border-y border-stone-200 py-3 dark:border-neutral-800 lg:hidden">
+                <button type="button" onClick={() => toggleMobileSection('quantity')} className="flex min-h-10 flex-1 items-center justify-between text-left text-sm font-bold text-stone-900 dark:text-stone-100">
+                  <span>Quantity &amp; details</span>
+                  {mobileSections.quantity ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </button>
+              </div>
+              <div className={`mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileSections.quantity ? 'block' : 'hidden lg:block'}`}>
+                {/* Quantity */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-start">
               <label className="text-stone-500 dark:text-neutral-400 font-medium font-body pt-2.5">
                 {activeCategory === 'billbook' ? `Quantity (${bbBinding}s)` : 'Quantity (pcs)'}
@@ -2338,43 +2397,7 @@ Please assist with this order.`;
             )}
 
           </div>
-
-          {mobileStep === 3 && (
-            <div className="mt-8 lg:hidden" id="config-step-review">
-              {renderMobileReview()}
-            </div>
-          )}
-
-          <div className="mt-6 flex items-center justify-between gap-3 lg:hidden">
-            <button
-              type="button"
-              onClick={() => setMobileStep((step) => Math.max(0, step - 1))}
-              disabled={mobileStep === 0}
-              className="inline-flex min-h-11 items-center gap-1 rounded-xl border border-stone-200 px-4 text-sm font-semibold text-stone-600 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:text-neutral-300"
-            >
-              <ChevronUp className="h-4 w-4 rotate-[-90deg]" />
-              Back
-            </button>
-            {mobileStep < mobileSteps.length - 1 ? (
-              <button
-                type="button"
-                onClick={() => setMobileStep((step) => Math.min(mobileSteps.length - 1, step + 1))}
-                className="inline-flex min-h-11 items-center gap-1 rounded-xl bg-neutral-900 px-5 text-sm font-bold text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900"
-              >
-                Continue
-                <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsMobileReviewOpen(true)}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-neutral-900 px-5 text-sm font-bold text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900"
-              >
-                <Eye className="h-4 w-4" />
-                Review order
-              </button>
-            )}
-          </div>
+          </section>
         </div>
         </div>
 
@@ -2630,10 +2653,7 @@ Please assist with this order.`;
             </div>
           </div>
           <button
-            onClick={() => {
-              setMobileStep(3);
-              setIsMobileReviewOpen(true);
-            }}
+            onClick={() => setIsMobileReviewOpen(true)}
             disabled={!!sizeError}
             className={`flex-1 max-w-[180px] h-12 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 transition-all font-body ${sizeError ? 'bg-stone-100 dark:bg-neutral-800 text-stone-400 dark:text-neutral-500 cursor-not-allowed' : 'bg-neutral-800 text-[#c1ff72] dark:bg-[#c1ff72] dark:text-neutral-900 shadow-lg active:scale-95'}`}
           >
