@@ -62,6 +62,15 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // React Router changes the route before the homepage target exists, so scroll after render.
+  useEffect(() => {
+    if (location.pathname !== '/' || location.hash !== '#contact') return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.pathname, location.hash]);
+
   useEffect(() => {
     if (!isMobileMenuOpen) return;
 

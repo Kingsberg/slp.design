@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Layers, Tag, Printer, FileText, ArrowRight, Check } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,7 +9,6 @@ import { useGSAP } from '@gsap/react';
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const Services: React.FC = () => {
-  const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -65,7 +64,7 @@ const Services: React.FC = () => {
         <div className="services-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 auto-rows-fr">
           
           {/* Card 1: Business Cards (Dark teal) */}
-          <div onClick={() => navigate('/business')} className="service-card spotlight-card row-span-1 lg:row-span-2 group overflow-hidden lg:p-10 flex flex-col min-h-[500px] lg:min-h-full transition-transform hover:scale-[1.01] duration-300 bg-[#002f43] rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative justify-between cursor-pointer">
+          <Link to="/business" aria-label="Configure Business Cards" className="service-card spotlight-card row-span-1 lg:row-span-2 group overflow-hidden lg:p-10 flex flex-col min-h-[420px] sm:min-h-[500px] lg:min-h-full transition-transform hover:scale-[1.01] duration-300 bg-[#002f43] rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative justify-between cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c1ff72]">
             <div className="flex-1 flex w-full mt-4 mb-8 relative items-center justify-center">
               <div className="transform group-hover:-translate-y-2 transition-transform duration-500 bg-neutral-900 w-full max-w-[280px] z-10 rounded-xl pt-5 pr-5 pb-5 pl-5 relative shadow-2xl border border-neutral-800">
                 <div className="flex gap-1.5 border-neutral-800 border-b mb-4 pb-3 items-center">
@@ -99,10 +98,10 @@ const Services: React.FC = () => {
                 Explore Business Cards <ArrowRight className="ml-2 w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Card 2: Labels (Lime) */}
-          <div onClick={() => navigate('/label-sticker')} className="service-card spotlight-card col-span-1 md:col-span-2 group overflow-hidden lg:p-10 min-h-[400px] flex flex-col md:flex-row transition-transform hover:scale-[1.01] duration-300 bg-[#c1ff72] rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative items-center justify-between cursor-pointer">
+          <Link to="/label-sticker" aria-label="Configure Labels and Stickers" className="service-card spotlight-card col-span-1 md:col-span-2 group overflow-hidden lg:p-10 min-h-[360px] sm:min-h-[400px] flex flex-col md:flex-row transition-transform hover:scale-[1.01] duration-300 bg-[#c1ff72] rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative items-center justify-between cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900">
             <div className="relative z-20 flex flex-col h-full justify-between w-full md:w-1/2 mb-8 md:mb-0">
               <div>
                 <div className="w-12 h-12 rounded-2xl bg-white/40 backdrop-blur-sm flex items-center justify-center mb-6 text-stone-900">
@@ -145,10 +144,10 @@ const Services: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Card 3: Flyers (pale lime) */}
-          <div onClick={() => navigate('/marketing')} className="service-card spotlight-card group overflow-hidden lg:p-10 min-h-[400px] flex flex-col justify-between transition-transform hover:scale-[1.01] duration-300 bg-lime-50 dark:bg-neutral-900 border border-lime-100 dark:border-neutral-800 rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative cursor-pointer">
+          <Link to="/marketing" aria-label="Configure Flyers and Brochures" className="service-card spotlight-card group overflow-hidden lg:p-10 min-h-[360px] sm:min-h-[400px] flex flex-col justify-between transition-transform hover:scale-[1.01] duration-300 bg-lime-50 dark:bg-neutral-900 border border-lime-100 dark:border-neutral-800 rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c1ff72]">
             <div className="flex-1 flex w-full items-center justify-center relative min-h-[160px]">
               <div className="space-y-3 w-full max-w-[240px]">
                 <div className="bg-white dark:bg-neutral-850 p-3 rounded-xl border border-stone-200 dark:border-neutral-800 shadow-sm flex items-center gap-3">
@@ -176,10 +175,10 @@ const Services: React.FC = () => {
                 Learn More <ArrowRight className="ml-1 w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Card 4: Inkjet (sky) */}
-          <div onClick={() => navigate('/inkjet')} className="service-card spotlight-card group overflow-hidden lg:p-10 min-h-[400px] flex flex-col justify-between transition-transform hover:scale-[1.01] duration-300 bg-sky-50 dark:bg-neutral-900 border border-sky-100 dark:border-neutral-800 rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative cursor-pointer">
+          <Link to="/inkjet" aria-label="Configure Inkjet Printing" className="service-card spotlight-card group overflow-hidden lg:p-10 min-h-[360px] sm:min-h-[400px] flex flex-col justify-between transition-transform hover:scale-[1.01] duration-300 bg-sky-50 dark:bg-neutral-900 border border-sky-100 dark:border-neutral-800 rounded-[32px] pt-8 pr-6 pb-8 pl-6 relative cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c1ff72]">
             <div className="flex-1 flex w-full items-center justify-center relative min-h-[160px]">
               <div className="bg-white dark:bg-neutral-850 p-4 rounded-xl border border-sky-100 dark:border-neutral-800 shadow-sm w-full max-w-[200px] space-y-3">
                 <div className="h-20 bg-sky-100/50 dark:bg-neutral-800/50 rounded-lg flex items-center justify-center relative border border-dashed border-sky-200 dark:border-neutral-700">
@@ -202,7 +201,7 @@ const Services: React.FC = () => {
                 View Large Format <ArrowRight className="ml-1 w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
               </span>
             </div>
-          </div>
+          </Link>
 
         </div>
       </div>

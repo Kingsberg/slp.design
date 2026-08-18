@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Check, MessageCircle, FileText, Calendar, X, AlertTriangle, Box, Layout } from 'lucide-react';
+import { Check, MessageCircle, FileText, Calendar, X, AlertTriangle, Box, Layout, ChevronDown, ChevronUp, ClipboardCheck, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { PRODUCT_DATA, LABEL_QTY_STEPS, ProductConfigData } from '../data/productData';
@@ -176,6 +176,10 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ activeCategor
   const [bbNumberError, setBbNumberError] = useState<string | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
+  // Mobile browsing helpers: keep the long configurator scannable without changing desktop behavior.
+  const [mobileStep, setMobileStep] = useState(0);
+  const [isMobileReviewOpen, setIsMobileReviewOpen] = useState(false);
+
   // Helper to determine available quantities
   const getQuantitiesFor = (cat: string, currentSize: string, currentMaterial?: string) => {
     if (cat === 'label-sticker') {
@@ -286,6 +290,12 @@ const ProductConfigurator: React.FC<ProductConfiguratorProps> = ({ activeCategor
     }
     return config.printColors[0];
   }, [activeCategory, selectedType, config.printColors]);
+
+  // Reset the mobile flow when the visitor switches product categories.
+  useEffect(() => {
+    setMobileStep(0);
+    setIsMobileReviewOpen(false);
+  }, [activeCategory]);
 
   // Initialize and synchronize states from URL search parameters on load
   useEffect(() => {
@@ -1116,6 +1126,65 @@ Please assist with this order.`;
     return finishing;
   };
 
+  const summaryItems = useMemo(() => {
+    const currentSize = config.isCustomSize
+      ? `${customWidth}${activeCategory === 'label-sticker' ? 'mm' : 'ft'} x ${customHeight}${activeCategory === 'label-sticker' ? 'mm' : 'ft'}`
+      : (activeCategory === 'business' && size === 'Custom Size' ? `${bizCustomHeight}mm (H) x ${bizCustomWidth}mm (W)` : size);
+
+    return [
+      { label: 'Product', value: config.label },
+      ...(config.types ? [{ label: 'Type', value: selectedType }] : []),
+      { label: 'Size', value: currentSize },
+      { label: 'Material', value: material },
+      { label: 'Quantity', value: String(quantity) },
+      { label: 'Finishing', value: getFlyerSummary() },
+      ...(designOption === 'Let us design for you' ? [{ label: 'Design', value: designOption }] : []),
+    ];
+  }, [activeCategory, bizCustomHeight, bizCustomWidth, config, customHeight, customWidth, designOption, finishing, flyerFolding, flyerHolePunching, flyerHotStamping, material, quantity, selectedType, size, stickerLamination]);
+
+  const mobileSteps = ['Product', 'Finishing', 'Quantity', 'Review'];
+
+  const renderMobileReview = () => (
+    <div className="rounded-2xl border border-stone-200 dark:border-neutral-800 bg-stone-50/80 dark:bg-neutral-950/40 p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <div className="h-10 w-10 shrink-0 rounded-xl bg-[#c1ff72] text-neutral-900 flex items-center justify-center">
+          <ClipboardCheck className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 font-body">Review your order</h3>
+          <p className="mt-1 text-xs leading-relaxed text-stone-500 dark:text-neutral-400 font-body">Check the specifications before sending your request to WhatsApp.</p>
+        </div>
+      </div>
+      <dl className="mt-4 divide-y divide-stone-200 dark:divide-neutral-800 rounded-xl border border-stone-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/60 px-3">
+        {summaryItems.map((item) => (
+          <div key={item.label} className="flex items-start justify-between gap-4 py-2.5 text-xs">
+            <dt className="text-stone-500 dark:text-neutral-400">{item.label}</dt>
+            <dd className="max-w-[62%] text-right font-medium text-stone-800 dark:text-neutral-200">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="mt-4 flex items-end justify-between gap-4">
+        <div>
+          <div className="text-[10px] uppercase tracking-wider text-stone-500 dark:text-neutral-400">Estimated total</div>
+          <div className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-100 font-body">{formatPrice(price)}</div>
+        </div>
+        <div className="text-right text-xs text-stone-500 dark:text-neutral-400">
+          <div className="font-semibold text-stone-700 dark:text-neutral-200">{shipmentDateData.dateString}</div>
+          <div className="mt-0.5">{shipmentDateData.displayDays} working days</div>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={handleCheckout}
+        disabled={!!sizeError}
+        className={`mt-4 w-full rounded-xl px-4 py-3.5 text-sm font-bold transition-all ${sizeError ? 'cursor-not-allowed bg-stone-200 text-stone-400 dark:bg-neutral-800 dark:text-neutral-500' : 'bg-neutral-900 text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900'}`}
+      >
+        <MessageCircle className="mr-2 inline-block h-4 w-4" />
+        Send artwork &amp; order on WhatsApp
+      </button>
+    </div>
+  );
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-44 lg:pb-12 scroll-mt-24" id="order">
       {/* Horizontal Category Switcher */}
@@ -1160,8 +1229,29 @@ Please assist with this order.`;
           </div>
 
           <div>
+            {/* Mobile progressive flow. Desktop keeps all sections visible as before. */}
+            <div className="mb-6 lg:hidden">
+              <div className="flex items-center justify-between gap-2" aria-label="Order progress">
+                {mobileSteps.map((step, index) => (
+                  <button
+                    key={step}
+                    type="button"
+                    onClick={() => setMobileStep(index)}
+                    className="group flex min-w-0 flex-1 flex-col items-center gap-1.5"
+                    aria-current={mobileStep === index ? 'step' : undefined}
+                  >
+                    <span className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold transition-colors ${mobileStep === index ? 'border-neutral-900 bg-neutral-900 text-[#c1ff72] dark:border-[#c1ff72] dark:bg-[#c1ff72] dark:text-neutral-900' : mobileStep > index ? 'border-[#c1ff72] bg-[#c1ff72]/20 text-stone-700 dark:text-neutral-200' : 'border-stone-300 text-stone-400 dark:border-neutral-700 dark:text-neutral-500'}`}>{index + 1}</span>
+                    <span className={`truncate text-[10px] font-medium ${mobileStep === index ? 'text-stone-900 dark:text-stone-100' : 'text-stone-400 dark:text-neutral-500'}`}>{step}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3 h-1 overflow-hidden rounded-full bg-stone-200 dark:bg-neutral-800">
+                <div className="h-full rounded-full bg-[#c1ff72] transition-all duration-200" style={{ width: `${((mobileStep + 1) / mobileSteps.length) * 100}%` }} />
+              </div>
+            </div>
+
             {/* ESSENTIAL PRINT DETAILS */}
-            <div className="space-y-4">
+            <div className={`space-y-4 ${mobileStep === 0 ? 'block' : 'hidden lg:block'}`} id="config-step-product">
               {activeCategory === 'billbook' ? (
                 <>
                   <div className="space-y-4 mb-3">
@@ -1507,7 +1597,7 @@ Please assist with this order.`;
             </div>
 
             {/* PRINT FINISHES AND ARTWORK */}
-            <div className="mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800">
+            <div className={`mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileStep === 1 ? 'block' : 'hidden lg:block'}`} id="config-step-finishing">
               {activeCategory === 'billbook' ? (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-center">
@@ -2131,7 +2221,7 @@ Please assist with this order.`;
           </div>
 
           {/* QUANTITY AND OPTIONAL DETAILS */}
-          <div className="mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800">
+          <div className={`mt-8 space-y-4 border-t border-stone-200 pt-6 dark:border-neutral-800 ${mobileStep === 2 ? 'block' : 'hidden lg:block'}`} id="config-step-quantity">
             {/* Quantity */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 items-start">
               <label className="text-stone-500 dark:text-neutral-400 font-medium font-body pt-2.5">
@@ -2247,6 +2337,43 @@ Please assist with this order.`;
               </div>
             )}
 
+          </div>
+
+          {mobileStep === 3 && (
+            <div className="mt-8 lg:hidden" id="config-step-review">
+              {renderMobileReview()}
+            </div>
+          )}
+
+          <div className="mt-6 flex items-center justify-between gap-3 lg:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileStep((step) => Math.max(0, step - 1))}
+              disabled={mobileStep === 0}
+              className="inline-flex min-h-11 items-center gap-1 rounded-xl border border-stone-200 px-4 text-sm font-semibold text-stone-600 disabled:cursor-not-allowed disabled:opacity-40 dark:border-neutral-700 dark:text-neutral-300"
+            >
+              <ChevronUp className="h-4 w-4 rotate-[-90deg]" />
+              Back
+            </button>
+            {mobileStep < mobileSteps.length - 1 ? (
+              <button
+                type="button"
+                onClick={() => setMobileStep((step) => Math.min(mobileSteps.length - 1, step + 1))}
+                className="inline-flex min-h-11 items-center gap-1 rounded-xl bg-neutral-900 px-5 text-sm font-bold text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900"
+              >
+                Continue
+                <ChevronDown className="h-4 w-4 rotate-[-90deg]" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsMobileReviewOpen(true)}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-neutral-900 px-5 text-sm font-bold text-[#c1ff72] active:scale-[0.98] dark:bg-[#c1ff72] dark:text-neutral-900"
+              >
+                <Eye className="h-4 w-4" />
+                Review order
+              </button>
+            )}
           </div>
         </div>
         </div>
@@ -2503,15 +2630,47 @@ Please assist with this order.`;
             </div>
           </div>
           <button
-            onClick={handleCheckout}
+            onClick={() => {
+              setMobileStep(3);
+              setIsMobileReviewOpen(true);
+            }}
             disabled={!!sizeError}
             className={`flex-1 max-w-[180px] h-12 rounded-xl font-bold text-sm shadow-lg flex items-center justify-center gap-2 transition-all font-body ${sizeError ? 'bg-stone-100 dark:bg-neutral-800 text-stone-400 dark:text-neutral-500 cursor-not-allowed' : 'bg-neutral-800 text-[#c1ff72] dark:bg-[#c1ff72] dark:text-neutral-900 shadow-lg active:scale-95'}`}
           >
-            <MessageCircle className="w-4 h-4" />
-            <span>ORDER</span>
+            <ClipboardCheck className="w-4 h-4" />
+            <span>REVIEW ORDER</span>
           </button>
         </div>
       </div>
+
+      {isMobileReviewOpen && (
+        <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label="Review order">
+          <button
+            type="button"
+            aria-label="Close order review"
+            onClick={() => setIsMobileReviewOpen(false)}
+            className="absolute inset-0 bg-neutral-950/50 backdrop-blur-sm"
+          />
+          <div className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-3xl border-t border-stone-200 bg-stone-100 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 shadow-2xl dark:border-neutral-800 dark:bg-neutral-950">
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-stone-300 dark:bg-neutral-700" />
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-stone-500 dark:text-neutral-400">Final check</div>
+                <h3 className="mt-1 text-lg font-bold text-stone-900 dark:text-stone-100 font-body">Ready to send?</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobileReviewOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-stone-200 bg-white text-stone-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300"
+                aria-label="Close order review"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            {renderMobileReview()}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

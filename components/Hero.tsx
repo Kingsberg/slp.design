@@ -177,7 +177,8 @@ const Hero: React.FC = () => {
             </div>
           </article>
 
-          <aside className="bottom-card spotlight-card relative sm:p-10 flex flex-col md:min-h-[340px] lg:min-h-[380px] group transition-all duration-300 text-stone-900 bg-[url('https://images.unsplash.com/photo-1626785774573-4b7993143a2d?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center border border-stone-200/60 dark:border-neutral-800 rounded-xl pt-8 pr-8 pb-8 pl-8 shadow-md overflow-hidden">
+          <aside className="bottom-card spotlight-card relative sm:p-10 flex flex-col md:min-h-[340px] lg:min-h-[380px] group transition-all duration-300 text-stone-900 border border-stone-200/60 dark:border-neutral-800 rounded-xl pt-8 pr-8 pb-8 pl-8 shadow-md overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1626785774573-4b7993143a2d?q=80&w=1200&auto=format&fit=crop" alt="Colorful printed materials" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-white/95 dark:from-neutral-950/95 via-white/80 dark:via-neutral-950/80 to-white/40 dark:to-neutral-950/40 rounded-xl -z-0 animate-fade-in"></div>
             <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-start justify-between">
@@ -191,7 +192,8 @@ const Hero: React.FC = () => {
             </div>
           </aside>
 
-          <aside id="contact" className="bottom-card spotlight-card relative sm:p-10 flex flex-col md:min-h-[340px] lg:min-h-[380px] group transition-all duration-300 text-stone-900 bg-[url(https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=1974&auto=format&fit=crop)] bg-cover bg-center border border-stone-200/60 dark:border-neutral-800 rounded-xl pt-8 pr-8 pb-8 pl-8 shadow-md overflow-hidden">
+          <aside id="contact" className="bottom-card spotlight-card relative sm:p-10 flex flex-col md:min-h-[340px] lg:min-h-[380px] group transition-all duration-300 text-stone-900 border border-stone-200/60 dark:border-neutral-800 rounded-xl pt-8 pr-8 pb-8 pl-8 shadow-md overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=1200&auto=format&fit=crop" alt="Paper and print production workspace" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-white/95 dark:from-neutral-950/95 via-white/85 dark:via-neutral-950/85 to-white/50 dark:to-neutral-950/50 rounded-xl -z-0 animate-fade-in"></div>
             <div className="relative z-10 h-full flex flex-col">
               <div className="flex items-start justify-between">
